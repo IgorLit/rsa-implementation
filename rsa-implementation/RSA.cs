@@ -9,7 +9,7 @@ namespace rsa_implementation
 {
     class RSA
     {
-
+        private char blockSeporator = '-';
         private static List<int> arr;
         private static Random rnd;
         private BigInteger e;
@@ -18,9 +18,20 @@ namespace rsa_implementation
 
         public RSA()
         {
+            this.initParams();
+        }
+
+        public RSA(char blockSeporator)
+        {
+            this.blockSeporator = blockSeporator;
+            this.initParams();
+        }
+
+        private void initParams()
+        {
             arr = initPrimeNum();
             rnd = new Random();
-            getPQ();
+            generatePQ();
         }
 
         private List<int> initPrimeNum()
@@ -95,9 +106,9 @@ namespace rsa_implementation
             return e;
         }
 
-        private BigInteger getD(BigInteger e, BigInteger fhi)
+        private BigInteger getD(BigInteger e, BigInteger fi)
         {
-            BigInteger i = fhi, v = 0, d = 1;
+            BigInteger i = fi, v = 0, d = 1;
             while (e > 0)
             {
                 BigInteger t = i / e, x = e;
@@ -107,8 +118,8 @@ namespace rsa_implementation
                 d = v - t * x;
                 v = x;
             }
-            v %= fhi;
-            if (v < 0) v = (v + fhi) % fhi;
+            v %= fi;
+            if (v < 0) v = (v + fi) % fi;
             return v;
         }
 
@@ -127,14 +138,14 @@ namespace rsa_implementation
             string eText = "";
             foreach (var symbol in text)
             {
-                eText += encript(symbol, e, n) + '|';
+                eText += encript(symbol, e, n) + this.blockSeporator;
             }
             return eText;
         }
 
         private string textDecript(string text, BigInteger d, BigInteger n)
         {
-            string[] arr = text.Split('|');
+            string[] arr = text.Split(this.blockSeporator);
             string dText = "";
             foreach (var symbol in arr)
             {
@@ -155,7 +166,7 @@ namespace rsa_implementation
 
         }
 
-        private void getPQ()
+        private void generatePQ()
         {
             int q;
             int p;
@@ -165,12 +176,6 @@ namespace rsa_implementation
             this.e = getPrime(rnd, fi);
             this.d = getD(e, fi);
         }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            getPQ();
-        }
-
     }
 
 }
