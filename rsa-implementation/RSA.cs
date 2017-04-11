@@ -9,7 +9,7 @@ namespace rsa_implementation
 {
     class RSA
     {
-        private char blockSeporator = '-';
+        private char blockSeporator = '*';
         private static List<int> arr;
         private static Random rnd;
         private BigInteger e;
@@ -24,7 +24,7 @@ namespace rsa_implementation
         public RSA(char blockSeporator)
         {
             this.blockSeporator = blockSeporator;
-            this.initParams();
+             this.initParams();
         }
 
         private void initParams()
@@ -61,8 +61,17 @@ namespace rsa_implementation
 
         private void getPrimeNum(Random rnd, List<int> arr, out int n1, out int n2)
         {
-            n1 = arr[rnd.Next(arr.Count)];
-            n2 = arr[rnd.Next(arr.Count)];
+            int firstNumber = arr[rnd.Next(arr.Count)];
+            int secondNumber = arr[rnd.Next(arr.Count)];
+            if (firstNumber == secondNumber)
+            {
+                this.getPrimeNum(rnd, arr, out n1, out n2);
+            }
+            else
+            {
+                n1 = firstNumber;
+                n2 = secondNumber;
+            }
         }
 
         private BigInteger getN(int p, int q)
